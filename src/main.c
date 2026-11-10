@@ -20,26 +20,34 @@ void travelDirectory(char *directory_source){
 
     while((directory_entry_point = readdir(directory)) != NULL){
         if( strcmp(directory_entry_point->d_name, ".") == 0 || 
-            strcmp(directory_entry_point->d_name, "..") == 0
+            strcmp(directory_entry_point->d_name, "..") == 0 ||
+            strcmp(directory_entry_point->d_name, ".git") == 0 
         ){
             continue;
         }
 
-        const char *relative_path = directory_entry_point->d_name;
+        char path[4096];
 
-        char *fullpath = strcat(directory_source, relative_path);   
-        printf("%s", fullpath);
+        int result = snprintf(
+            path,
+            sizeof(path),
+            "%s/%s",
+            directory_source,
+            directory_entry_point->d_name
+        );
 
-        if(lstat(directory_entry_point->d_name, &info) == -1){
+        if(result < 0 || (size_t) result >= sizeof(path)){
+            fprintf(stderr, "Caminho muito longo: %s\n", directory_entry_point->d_name);
+            continue;
+        }
+
+        if(lstat(path, &info) == -1){
             perror("lstat");
             return;
         }
         
-        if(S_ISDIR(info.st_mode)) {
-            printf("Caminho passado para a função: %s ", directory_entry_point->d_name);
-            travelDirectory(directory_entry_point->d_name);
-        }
-        if(S_ISREG(info.st_mode)) printf("Name: %s\n", directory_entry_point->d_name);
+        if(S_ISDIR(info.st_mode)) travelDirectory(path);
+        if(S_ISREG(info.st_mode)) printf("File Path: %s\n", path);
     }
 
     closedir(directory);
