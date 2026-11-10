@@ -7,7 +7,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-void travelDirectory(char *directory_source){
+void travel_directory(char *directory_source){
     DIR *directory = opendir(directory_source);
     
     if(directory == NULL){
@@ -46,7 +46,7 @@ void travelDirectory(char *directory_source){
             return;
         }
         
-        if(S_ISDIR(info.st_mode)) travelDirectory(path);
+        if(S_ISDIR(info.st_mode)) travel_directory(path);
         if(S_ISREG(info.st_mode)) printf("File Path: %s\n", path);
     }
 
@@ -58,6 +58,6 @@ int main(int argc, char *argv[])
     char *directory_source = malloc(sizeof(argv[1]));
     directory_source = realpath((argc == 1) ? "./" : argv[1], NULL);
 
-    travelDirectory(directory_source);
+    travel_directory(directory_source);
     return 0;
 }
