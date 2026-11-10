@@ -7,24 +7,6 @@
 #include <string.h>
 #include <sys/stat.h>
 
-const char* checkMode(struct stat *info)
-{
-    if (S_ISREG(info->st_mode))
-    {
-        return "FILE";
-    }
-    else if (S_ISDIR(info->st_mode))
-    {
-        return "DIR";
-    }
-    else if (S_ISLNK(info->st_mode))
-    {
-        return "LINK";
-    }
-
-    return "";
-}
-
 void travelDirectory(char *directory_source){
     DIR *directory = opendir(directory_source);
     
