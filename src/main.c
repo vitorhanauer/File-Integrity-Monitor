@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]){
     char *directory_source = malloc(sizeof(argv[1]));
-    directory_source = (argv[1] == NULL) ? "." : argv[1];
+    directory_source = (argc == 1) ? "." : argv[1];
 
     DIR *directory = opendir(directory_source);
 
